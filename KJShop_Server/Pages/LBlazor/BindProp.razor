@@ -1,0 +1,119 @@
+﻿@page "/LBlazor/BindProp"
+
+<h2 class="text-success">Individuelt produkt</h2>
+<div class="row">
+    <div class="col-6 border p-3">
+        <h3 class="text-primary">Produkt legeplads</h3><hr />
+        <div>
+            Active: <input type="checkbox" @bind-value="Product.IsActive" checked="@(Product.IsActive?"checked":null)" /> <br />
+        </div>
+        <div>
+            @*Pris: <input type="number" value="@Product.Pris" />*@
+            Pris: <input type="number" @bind-value="@Product.Pris" @bind-value:event="oninput" /> <br />
+            @*Pris: <input type="number" @bind="@Product.Pris" @bind:event="oninput" />*@
+        </div>
+        <div>
+            Product Properties:
+            <select @bind="selectedProp">
+                @foreach (var prop in Product.ProductProperties)
+                {
+                    <option value="@prop.Key">@prop.Key</option>
+                }
+            </select>
+        </div>
+    </div>
+<div class="col-6 border p-2">
+    <h3 class="text-primary">Produktresume</h3><hr />
+    Name: @Product.Navn<br />
+    Active: @Product.IsActive<br />
+    Pris: @Product.Pris<br />
+    This Product is : @(Product.IsActive?"Active":"InActive")<br />
+    Property Selected : @selectedProp<br />
+    @if (!String.IsNullOrWhiteSpace(selectedProp))
+    {
+        <p>Property Value : @Product.ProductProperties.FirstOrDefault(u => u.Key == selectedProp).Value</p>
+    }
+</div>
+
+<br />
+<div class="col-12 pt-4">
+    <h2 class="text-success">Product tabel</h2>
+    <table class="table table-striped">
+        <tbody>
+            @foreach (var prod in Products)
+            {
+                <tr>
+                    <td>
+                        <input type="text" @bind-value="prod.Navn" @bind-value:event="oninput" />
+                    </td>
+                    <td>
+                        <input type="text" @bind-value="prod.Pris" @bind-value:event="oninput" />
+                    </td>
+                    <td>
+                        <input type="checkbox" @bind-value="prod.IsActive" checked="@(prod.IsActive?"checked":null)" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br /><br />
+    <h2>Product Resume</h2>
+    @foreach (var prod in Products)
+    {
+        <p>@prod.Navn [@prod.Pris] is @(prod.IsActive?"Active":"InActive")</p>
+    }
+</div>
+</div>
+
+
+@code {
+    private string selectedProp = "";
+
+    D_Product Product = new()
+    {
+        Id = 1,
+        Navn = "Tegning1",
+        IsActive = true,
+        Pris = 10.99,
+        ProductProperties = new List<D_ProductProp>()
+        {
+            new D_ProductProp { Id = 1, Key = "Farve", Value = "Sort"},
+            new D_ProductProp { Id = 2, Key = "Stjerne", Value = "Rose Jasmine"},
+            new D_ProductProp { Id = 3, Key = "Size", Value = "100kcm"},
+        }
+    };
+
+    List<D_Product> Products = new();
+
+    protected override void OnInitialized()
+    {
+        Products.Add(new()
+        {
+            Id = 1,
+            Navn = "Tegning2",
+            IsActive = false,
+            Pris = 10.99,
+            ProductProperties = new List<D_ProductProp>()
+            {
+                new D_ProductProp { Id = 1, Key = "Farve", Value = "Lilla"},
+                new D_ProductProp { Id = 2, Key = "Stjerne1", Value = "Rose Jas"},
+                new D_ProductProp { Id = 3, Key = "Size", Value = "20kcm"},
+            }
+        });
+
+        Products.Add(new()
+        {
+            Id = 2,
+            Navn = "Tegning3",
+            IsActive = true,
+            Pris = 14.99,
+            ProductProperties = new List<D_ProductProp>()
+            {
+                new D_ProductProp { Id = 1, Key = "Farve", Value = "Rød"},
+                new D_ProductProp { Id = 2, Key = "Stjerne2", Value = "Rose Jasmi"},
+                new D_ProductProp { Id = 3, Key = "Size", Value = "30kcm"},
+            }
+        });
+    }
+
+}

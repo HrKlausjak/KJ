@@ -1,0 +1,75 @@
+﻿@page "/LBlazor/demoproduct"
+
+
+
+<h2 class="text-primary">DemoProduct</h2>
+<p>Favoritter i alt : @SelectedFavouriteCount</p>
+<p>Sidste Valgte Produkt : @LastSelectedProductNavn </p>
+
+<div class="border p-2 mt-2" style="background-color:azure">
+    <div class="row">
+        @foreach (var prod in Products)
+        {
+            <_IndividualProduct Product="prod" OnFavoriteUpdated="FavouriteCountUpdate"
+                OnLastSelectedProductChange="SelectedProductUpdate">
+                <FirstFragment>#1</FirstFragment>
+                <SecondFragment>#2</SecondFragment>
+            </_IndividualProduct>
+        }
+    </div>
+</div>
+
+@code {
+
+    List<D_Product> Products = new();
+    private int SelectedFavouriteCount { get; set; } = 0;
+    private string LastSelectedProductNavn { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Products.Add(new()
+        {
+            Id = 1,
+            Navn = "Tegning2",
+            IsActive = false,
+            Pris = 10.99,
+            ProductProperties = new List<D_ProductProp>()
+    {
+            new D_ProductProp { Id = 1, Key = "Farve", Value = "Lilla"},
+            new D_ProductProp { Id = 2, Key = "Stjerne1", Value = "Rose Jas"},
+            new D_ProductProp { Id = 3, Key = "Size", Value = "20kcm"},
+        }
+        });
+
+        Products.Add(new()
+        {
+            Id = 2,
+            Navn = "Tegning3",
+            IsActive = true,
+            Pris = 14.99,
+            ProductProperties = new List<D_ProductProp>()
+    {
+            new D_ProductProp { Id = 1, Key = "Farve", Value = "Rød"},
+            new D_ProductProp { Id = 2, Key = "Stjerne2", Value = "Rose Jasmi"},
+            new D_ProductProp { Id = 3, Key = "Size", Value = "30kcm"},
+        }
+        });
+    }
+
+    protected void FavouriteCountUpdate(bool isSelected)
+    {
+        if (isSelected)
+        {
+            SelectedFavouriteCount++;
+        }
+        else
+        {
+            SelectedFavouriteCount--;
+        }
+    }
+
+    protected void SelectedProductUpdate(string productNavn)
+    {
+        LastSelectedProductNavn = productNavn;
+    }
+}

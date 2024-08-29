@@ -1,0 +1,66 @@
+﻿@page "/LBlazor/blazorJs"
+
+@inject IJSRuntime _JsRuntime
+
+<h3>BlazorJs</h3>
+
+<div class="row">
+    <button class="btn btn-secondary m-2" style="width:200px;" @onclick="TestConfirmBox">Test Confirm Knap</button>            
+</div>
+<div class="row">
+    <button class="btn btn-success m-2" style="width:200px;" @onclick="ToastrSuccess">Toastr lykkes</button>
+    <button class="btn btn-danger m-2" style="width:200px;" @onclick="ToastrFailure">Toastr mislykkes</button>
+</div>
+<br />
+<div class="row">
+    <button class="btn btn-success m-2" style="width:200px;" @onclick="SweetAlertSuccess">SweetAlert lykkes</button>
+    <button class="btn btn-danger m-2" style="width:200px;" @onclick="SweetAlertFailure">SweetAlert mislykkes</button>
+</div>
+
+<div class="row">
+    @if (ConfirmResult)
+    {
+        <p>Bekræftelse er fortaget!</p>
+    }
+    else
+    {
+       <p>Bekræftelse afventer!</p>
+    }
+</div>
+
+@code {
+
+    private string ConfirmMessage = "Er du sikker på at du vil klikke?";
+
+    private bool ConfirmResult { get; set; }
+
+    private async Task TestConfirmBox()
+    {
+        ConfirmResult = await _JsRuntime.InvokeAsync<bool>("confirm", ConfirmMessage);
+    }
+
+
+    private async Task ToastrSuccess()
+    {
+        await _JsRuntime.ToastrSuccess("Operation Successful");
+    }
+
+
+    private async Task ToastrFailure()
+    {
+        await _JsRuntime.ToastrError("Operation Failed");
+        //await _JsRuntime.InvokeVoidAsync("ShowToastr", "error", "Error");
+    }
+
+    private async Task SweetAlertSuccess()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowSwal", "success", "Opgaven udført med succes");
+    }
+
+
+    private async Task SweetAlertFailure()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowSwal", "error", "Opgaven mislykkes");
+        //await _JsRuntime.InvokeVoidAsync("ShowToastr", "error", "Error");
+    }
+}

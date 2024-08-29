@@ -1,0 +1,49 @@
+﻿
+<div class="bg-light border m-1 col-5" @onclick="(args)=>LastSelectedProduct(args,Product.Navn)">
+    <h4 class="text-secondary">Product - @Product.Id</h4>
+    <input type="checkbox" @onchange="FavoriteUpdated" />Føj til Favoriter <br /><br />
+    Navn - @Product.Navn<br />
+    <p>RF from forældre - @FirstFragment @SecondFragment</p>
+    Show Properties :
+    <input type="checkbox" @bind-value="Product.IsActive" checked=@(Product.IsActive?"checked":null)>
+
+    @if (Product.IsActive)
+    {
+        @foreach (var prodProp in Product.ProductProperties)
+        {
+            <p>@prodProp.Key - @prodProp.Value</p>
+        }
+    }
+    <br />
+    <_EditDeleteButton IsActive="@Product.IsActive">
+    </_EditDeleteButton>
+
+</div>
+
+@code {
+    [Parameter]
+    public D_Product Product { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnFavoriteUpdated { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnLastSelectedProductChange { get; set; }
+
+    [Parameter]
+    public RenderFragment FirstFragment { get; set; }
+
+    [Parameter]
+    public RenderFragment SecondFragment { get; set; }
+
+    private async Task FavoriteUpdated(ChangeEventArgs e)
+    {
+        await OnFavoriteUpdated.InvokeAsync((bool)e.Value);
+    }
+
+    private async Task LastSelectedProduct(MouseEventArgs e, string navn)
+    {
+        await OnLastSelectedProductChange.InvokeAsync(navn);
+    }
+}
+
